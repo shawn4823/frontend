@@ -1,36 +1,43 @@
+// HeaderBar.jsx
+
 import React from 'react'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
-const HeaderBar = ({ setOpen }) => {
-
+const HeaderBar = ({loginMode, setLoginMode}) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    setLoginMode(prev=>(
+    {...prev, isLogin: false, username: ""}
+  ))
+  alert("로그아웃 되었습니다.")
+  navigation("/login")
+  }
   return (
     <Container>
 
-      <Left>
+      <Logo>
+        MySystem
+      </Logo>
 
-        <MenuButton
-          onClick={() => setOpen(prev => !prev)}
-        >
-          ☰
-        </MenuButton>
+      <Menu>
+        {loginMode.isLogin ? 
+          <div>
+            <button>안녕 {loginMode.username}</button>
+            <button onClick={handleLogout}>로그아웃</button>
+          </div>
+          :
+          <div>
+            <LoginButton onClick={()=>navigate("/login")}>
+              로그인
+            </LoginButton>
 
-        <Logo>
-          React Admin
-        </Logo>
-
-      </Left>
-
-      <Right>
-
-        <ActionButton>
-          로그인
-        </ActionButton>
-
-        <SignupButton>
-          회원가입
-        </SignupButton>
-
-      </Right>
+            <RegisterButton onClick={()=>navigate("/register")}>
+              회원가입
+            </RegisterButton>
+          </div>
+        }
+      </Menu>
 
     </Container>
   )
@@ -38,113 +45,79 @@ const HeaderBar = ({ setOpen }) => {
 
 export default HeaderBar
 
+
 const Container = styled.header`
-  height:70px;
 
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+    width: 100%;
+    height: 70px;
 
-  padding:0 25px;
+    background: #1e293b;
 
-  background:rgba(15,23,42,0.9);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-  backdrop-filter:blur(10px);
+    padding: 0 32px;
 
-  border-bottom:
-    1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 
-  position:sticky;
-  top:0;
+    position: sticky;
+    top: 0;
 
-  z-index:1100;
-`
+    z-index: 1000;
 
-const Left = styled.div`
-  display:flex;
-  align-items:center;
-  gap:15px;
-`
+    @media (max-width: 768px){
+        display: none;
+    }
+`;
 
-const Logo = styled.h1`
-  font-size:24px;
-  font-weight:800;
+const Logo = styled.div`
 
-  background:linear-gradient(
-    90deg,
-    #38bdf8,
-    #818cf8
-  );
+    font-size: 24px;
+    font-weight: bold;
 
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-`
+    color: #4dabf7;
 
-const Right = styled.div`
-  display:flex;
-  gap:12px;
-`
+    cursor: pointer;
+`;
 
-const MenuButton = styled.button`
-  display:none;
+const Menu = styled.div`
 
-  background:none;
-  border:none;
+    display: flex;
+    align-items: center;
 
-  color:white;
+    gap: 12px;
+`;
 
-  font-size:28px;
+const BaseButton = styled.button`
 
-  cursor:pointer;
+    border: none;
+    outline: none;
 
-  @media (max-width:768px){
-    display:block;
-  }
-`
+    padding: 10px 16px;
 
-const ActionButton = styled.button`
-  padding:10px 18px;
+    border-radius: 8px;
 
-  border:none;
-  border-radius:12px;
+    cursor: pointer;
 
-  background:#334155;
-  color:white;
+    font-size: 14px;
+    font-weight: 600;
 
-  cursor:pointer;
+    transition: 0.2s;
 
-  transition:0.3s;
+    &:hover{
+        transform: translateY(-1px);
+    }
+`;
 
-  &:hover{
-    background:#475569;
-    transform:translateY(-2px);
-  }
-`
+const LoginButton = styled(BaseButton)`
 
-const SignupButton = styled.button`
-  padding:10px 18px;
+    background: white;
+    color: #1e293b;
+`;
 
-  border:none;
-  border-radius:12px;
+const RegisterButton = styled(BaseButton)`
 
-  background:linear-gradient(
-    90deg,
-    #38bdf8,
-    #6366f1
-  );
-
-  color:white;
-
-  font-weight:700;
-
-  cursor:pointer;
-
-  transition:0.3s;
-
-  &:hover{
-    transform:translateY(-2px) scale(1.03);
-
-    box-shadow:
-      0 8px 20px rgba(99,102,241,0.4);
-  }
-`
+    background: #3b82f6;
+    color: white;
+`;

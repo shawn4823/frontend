@@ -1,226 +1,178 @@
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+// SiderBar.jsx
+
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import { Link, useLocation } from 'react-router-dom'
 
-function SiderBar({ open, setOpen }) {
+const SiderBar = () => {
 
-  const location = useLocation()
+    const [open, setOpen] = useState(false)
+
+    const location = useLocation()
 
   return (
     <>
-      <Container open={open}>
 
-        <LogoArea>
-          ⚡ Dashboard
-        </LogoArea>
+        {/* 모바일 상단 바 */}
+        <MobileTopBar>
 
-        <MenuList>
+            <MenuButton
+                onClick={() => setOpen(!open)}
+            >
+                ☰
+            </MenuButton>
 
-          <StyledLink
-            to="/"
-            active={location.pathname === '/'}
-            onClick={() => setOpen(false)}
-          >
-            <span>🏠</span>
-            Home
-          </StyledLink>
+            <MobileLogo>
+                MySystem
+            </MobileLogo>
 
-          <StyledLink
-            to="/todo"
-            active={location.pathname === '/todo'}
-            onClick={() => setOpen(false)}
-          >
-            <span>✅</span>
-            Todo
-          </StyledLink>
+        </MobileTopBar>
 
-          <StyledLink
-            to="/employee"
-            active={location.pathname === '/employee'}
-            onClick={() => setOpen(false)}
-          >
-            <span>👨‍💼</span>
-            Employee
-          </StyledLink>
+        {/* 사이드바 */}
+        <Container $open={open}>
 
-        </MenuList>
+            <Menu>
 
-      </Container>
+                <MenuItem
+                    to="/"
+                    $active={location.pathname === "/"}
+                    onClick={() => setOpen(false)}
+                >
+                    Home
+                </MenuItem>
 
-      {open && (
-        <Overlay
-          onClick={() => setOpen(false)}
-        />
-      )}
+                <MenuItem
+                    to="/todo"
+                    $active={location.pathname === "/todo"}
+                    onClick={() => setOpen(false)}
+                >
+                    할일
+                </MenuItem>
+
+                <MenuItem
+                    to="/employee"
+                    $active={location.pathname === "/employee"}
+                    onClick={() => setOpen(false)}
+                >
+                    고용인 정보
+                </MenuItem>
+
+            </Menu>
+
+        </Container>
+
     </>
   )
 }
 
 export default SiderBar
 
+
+const MobileTopBar = styled.div`
+
+    display: none;
+
+    @media (max-width: 768px){
+
+        width: 100%;
+        height: 60px;
+
+        background: #1e293b;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 0 16px;
+
+        position: fixed;
+
+        top: 0;
+        left: 0;
+
+        z-index: 1000;
+    }
+`;
+
+const MenuButton = styled.button`
+
+    border: none;
+    background: transparent;
+
+    color: white;
+
+    font-size: 28px;
+
+    cursor: pointer;
+`;
+
+const MobileLogo = styled.div`
+
+    color: white;
+
+    font-size: 20px;
+    font-weight: bold;
+`;
+
 const Container = styled.aside`
-  width:280px;
-  min-height:calc(100vh - 70px);
 
-  padding:25px 18px;
+    width: 240px;
 
-  background:
-    linear-gradient(
-      180deg,
-      #0f172a,
-      #111827,
-      #020617
-    );
+    min-height: calc(100vh - 70px);
 
-  border-right:
-    1px solid rgba(255,255,255,0.08);
+    background: #1e293b;
 
-  box-shadow:
-    4px 0 25px rgba(0,0,0,0.25);
+    padding: 24px 16px;
 
-  overflow:hidden;
+    transition: 0.3s;
 
-  @media (max-width:768px){
+    @media (max-width: 768px){
 
-    position:fixed;
+        position: fixed;
 
-    top:70px;
+        top: 60px;
 
-    left:${props => props.open ? '0' : '-320px'};
+        left: ${({ $open }) => ($open ? "0" : "-100%")};
 
-    width:280px;
-    height:100vh;
+        width: 240px;
 
-    transition:0.4s ease;
+        height: calc(100vh - 60px);
 
-    z-index:1000;
-  }
-`
+        overflow-y: auto;
 
-const LogoArea = styled.div`
-  font-size:28px;
-  font-weight:800;
+        z-index: 999;
+    }
+`;
 
-  margin-bottom:40px;
+const Menu = styled.nav`
 
-  text-align:center;
+    display: flex;
+    flex-direction: column;
 
-  background:
-    linear-gradient(
-      90deg,
-      #38bdf8,
-      #818cf8
-    );
+    gap: 12px;
+`;
 
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-`
+const MenuItem = styled(Link)`
 
-const MenuList = styled.div`
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-`
+    text-decoration: none;
 
-const StyledLink = styled(Link)`
-  position:relative;
+    padding: 14px 18px;
 
-  display:flex;
-  align-items:center;
-  gap:14px;
+    border-radius: 10px;
 
-  text-decoration:none;
+    color: ${({ $active }) =>
+        $active ? "white" : "#cbd5e1"};
 
-  padding:16px 18px;
+    background: ${({ $active }) =>
+        $active ? "#3b82f6" : "transparent"};
 
-  border-radius:18px;
+    font-size: 16px;
+    font-weight: 500;
 
-  color:white;
+    transition: 0.2s;
 
-  font-size:17px;
-  font-weight:600;
-
-  background:${props =>
-    props.active
-      ? 'linear-gradient(90deg,#38bdf8,#6366f1)'
-      : 'rgba(255,255,255,0.05)'
-  };
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  backdrop-filter:blur(8px);
-
-  overflow:hidden;
-
-  transition:0.35s;
-
-  box-shadow:${props =>
-    props.active
-      ? '0 10px 25px rgba(99,102,241,0.35)'
-      : 'none'
-  };
-
-  span{
-    font-size:20px;
-  }
-
-  &:hover{
-
-    transform:
-      translateX(8px)
-      scale(1.02);
-
-    background:
-      linear-gradient(
-        90deg,
-        #38bdf8,
-        #6366f1
-      );
-
-    box-shadow:
-      0 10px 25px rgba(99,102,241,0.35);
-  }
-
-  &::before{
-    content:'';
-
-    position:absolute;
-
-    top:0;
-    left:-100%;
-
-    width:100%;
-    height:100%;
-
-    background:
-      linear-gradient(
-        120deg,
-        transparent,
-        rgba(255,255,255,0.2),
-        transparent
-      );
-
-    transition:0.6s;
-  }
-
-  &:hover::before{
-    left:100%;
-  }
-`
-
-const Overlay = styled.div`
-  position:fixed;
-
-  top:70px;
-  left:0;
-
-  width:100%;
-  height:100vh;
-
-  background:rgba(0,0,0,0.55);
-
-  backdrop-filter:blur(3px);
-
-  z-index:999;
-`
+    &:hover{
+        background: #334155;
+        color: white;
+    }
+`;
