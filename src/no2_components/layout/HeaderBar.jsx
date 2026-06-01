@@ -1,42 +1,62 @@
 // HeaderBar.jsx
 
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+// import { UserContext } from '../../no0_context/UserContext'
+import { logout } from '../../no3_store/slices/userSlice'
 
-const HeaderBar = ({loginMode, setLoginMode}) => {
+const HeaderBar = () => {
+  const {isLogin, username} = useSelector(state=>state.user)
+  const dispatch = useDispatch();
+  // const {isLogin} = state;
   const navigate = useNavigate();
+
   const handleLogout = () => {
-    setLoginMode(prev=>(
-    {...prev, isLogin: false, username: ""}
-  ))
-  alert("로그아웃 되었습니다.")
-  navigation("/login")
+      dispatch(logout())
+      alert("로그아웃 되었습니다.")
+      navigate("/login")
   }
+
   return (
     <Container>
 
-      <Logo>
+      <Logo onClick={() => navigate("/")}>
         MySystem
       </Logo>
 
       <Menu>
-        {loginMode.isLogin ? 
-          <div>
-            <button>안녕 {loginMode.username}</button>
-            <button onClick={handleLogout}>로그아웃</button>
-          </div>
+
+        {isLogin ?
+
+          <UserSection>
+
+            <UserName>
+              👋 {username} 님
+            </UserName>
+
+            <LogoutButton onClick={handleLogout}>
+              로그아웃
+            </LogoutButton>
+
+          </UserSection>
+
           :
-          <div>
-            <LoginButton onClick={()=>navigate("/login")}>
+
+          <ButtonGroup>
+
+            <LoginButton onClick={() => navigate("/login")}>
               로그인
             </LoginButton>
 
-            <RegisterButton onClick={()=>navigate("/register")}>
+            <RegisterButton onClick={() => navigate("/register")}>
               회원가입
             </RegisterButton>
-          </div>
+
+          </ButtonGroup>
         }
+
       </Menu>
 
     </Container>
@@ -48,76 +68,126 @@ export default HeaderBar
 
 const Container = styled.header`
 
-    width: 100%;
-    height: 70px;
+  width: 100%;
+  height: 70px;
 
-    background: #1e293b;
+  background: #1e293b;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    padding: 0 32px;
+  padding: 0 32px;
 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 
-    position: sticky;
-    top: 0;
+  position: sticky;
+  top: 0;
 
-    z-index: 1000;
+  z-index: 1000;
 
-    @media (max-width: 768px){
-        display: none;
-    }
+  @media (max-width: 768px){
+    display: none;
+  }
 `;
 
 const Logo = styled.div`
 
-    font-size: 24px;
-    font-weight: bold;
+  font-size: 24px;
+  font-weight: bold;
 
-    color: #4dabf7;
+  color: #4dabf7;
 
-    cursor: pointer;
+  cursor: pointer;
+  transition: 0.2s;
+  &:hover{
+    opacity: 0.8;
+  }
 `;
 
 const Menu = styled.div`
 
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+`;
 
-    gap: 12px;
+const UserSection = styled.div`
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+`;
+
+const UserName = styled.div`
+
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  background: rgba(255,255,255,0.08);
+
+  padding: 10px 14px;
+
+  border-radius: 10px;
+`;
+
+const ButtonGroup = styled.div`
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
 `;
 
 const BaseButton = styled.button`
 
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 
-    padding: 10px 16px;
+  padding: 10px 16px;
 
-    border-radius: 8px;
+  border-radius: 10px;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    font-size: 14px;
-    font-weight: 600;
+  font-size: 14px;
+  font-weight: 600;
 
-    transition: 0.2s;
+  transition: 0.2s;
 
-    &:hover{
-        transform: translateY(-1px);
-    }
+  &:hover{
+    transform: translateY(-1px);
+  }
 `;
 
 const LoginButton = styled(BaseButton)`
 
-    background: white;
-    color: #1e293b;
+  background: white;
+  color: #1e293b;
+
+  &:hover{
+    background: #f1f5f9;
+  }
 `;
 
 const RegisterButton = styled(BaseButton)`
 
-    background: #3b82f6;
-    color: white;
+  background: #3b82f6;
+  color: white;
+
+  &:hover{
+    background: #2563eb;
+  }
+`;
+
+const LogoutButton = styled(BaseButton)`
+
+  background: #ef4444;
+  color: white;
+
+  &:hover{
+    background: #dc2626;
+  }
 `;

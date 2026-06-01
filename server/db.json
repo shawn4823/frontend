@@ -1,0 +1,138 @@
+{
+  "user": [
+    {
+      "id": "1",
+      "name": "Alice",
+      "password": "1111",
+      "age": 30,
+      "email": "alice@example.com",
+      "city": "New York"
+    },
+    {
+      "id": "2",
+      "name": "Bob",
+      "password": "1111",
+      "age": 25,
+      "email": "bob@example.com",
+      "city": "Los Angeles"
+    },
+    {
+      "id": "3",
+      "name": "Charlie",
+      "password": "1111",
+      "age": 35,
+      "email": "charlie@example.com",
+      "city": "Chicago"
+    },
+    {
+      "id": "4",
+      "name": "David",
+      "password": "1111",
+      "age": 28,
+      "email": "david@example.com",
+      "city": "Houston"
+    },
+    {
+      "id": "5",
+      "name": "Eve",
+      "password": "1111",
+      "age": 22,
+      "email": "eve@example.com",
+      "city": "Phoenix"
+    },
+    {
+      "id": "6",
+      "name": "Jona",
+      "password": "1111",
+      "age": 40,
+      "email": "jona@example.com",
+      "city": "Philadelphia"
+    },
+    {
+      "id": "7",
+      "name": "Kim",
+      "password": "1111",
+      "age": 31,
+      "email": "kim@example.com",
+      "city": "San Antonio"
+    }
+  ],
+  "employees": [
+    {
+      "id": "3",
+      "name": "Susan",
+      "email": "susan@example.com",
+      "job": "db55",
+      "pay": 600
+    },
+    {
+      "id": "4",
+      "name": "Sue",
+      "email": "sue@example.com",
+      "job": "ai",
+      "pay": 600
+    },
+    {
+      "name": "이순신",
+      "email": "aaaa@gmail.com",
+      "job": "rns",
+      "pay": "333",
+      "id": "eIRvbl3bL4o"
+    },
+    {
+      "0": {
+        "id": "3",
+        "name": "Susan",
+        "email": "susan@example.com",
+        "job": "db55",
+        "pay": 600
+      },
+      "1": {
+        "id": "4",
+        "name": "Sue",
+        "email": "sue@example.com",
+        "job": "ai",
+        "pay": 600
+      },
+      "2": {
+        "name": "이순신",
+        "email": "aaaa@gmail.com",
+        "job": "rns",
+        "pay": "333",
+        "id": "eIRvbl3bL4o"
+      },
+      "subject": "ㅇㅇ",
+      "id": "X5DiPOmBkVw"
+    },
+    {
+      "name": "dd",
+      "email": "df@ded33",
+      "job": "df",
+      "pay": "33",
+      "id": "05gQYf5ImtY"
+    }
+  ],
+  "todos": [
+    {
+      "subject": "할일dd",
+      "checked": false,
+      "id": "E18QcIWRJ04"
+    },
+    {
+      "subject": "sds",
+      "checked": false,
+      "id": "u_EZWuhbzog"
+    },
+    {
+      "subject": "추가",
+      "checked": false,
+      "id": "eFcKbhm1zeg"
+    },
+    {
+      "subject": "할일",
+      "checked": false,
+      "id": "rGQpZxmX840"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

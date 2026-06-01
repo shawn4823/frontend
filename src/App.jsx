@@ -1,79 +1,69 @@
 // App.jsx
-
-import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import styled from 'styled-components'
 
 import HomePage from './no1_pages/HomePage'
 import TodoPage from './no1_pages/TodoPage'
 import EmployeePage from './no1_pages/EmployeePage'
-
 import HeaderBar from './no2_components/layout/HeaderBar'
 import SiderBar from './no2_components/layout/SiderBar'
 import LoginPage from './no1_pages/user/LoginPage'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import RegisterPage from './no1_pages/user/RegisterPage'
+import EmployeeProvider from './no0_context/EmployeeContext'
+import UserProvider from './no0_context/UserContext'
+import { EmployeeContext } from './no0_context/EmployeeContext'
+import { UserContext } from './no0_context/UserContext'
+import TodoProvider from './no0_context/TodoContext'
+import { Provider } from 'react-redux'
+import store from './no3_store'
 
-
-const initialState = [
-  {id: 1, username: "john", password: "1111"},
-  {id: 2, username: "peter", password: "1111"},
-  {id: 3, username: "susan", password: "1111"},
-  {id: 4, username: "sue", password: "1111"},
-]
-
-const initialMode = {
-  isLogin: false, 
-  username: ""
-}
 
 function App() {
-  const [users, setUsers] = useState(initialState);
-  const [loginMode, setLoginMode] = useState(initialMode);
 
   return (
     <BrowserRouter>
-      {console.log(users)}
+    <Provider store={store}>
       <Container>
 
-        <HeaderBar
-          loginMode={loginMode}
-          setLoginMode={setLoginMode}
-        />
+        <HeaderBar />
 
         <BodyLayout>
-
-          <SiderBar/>
+          <SiderBar />
 
           <PageContainer>
 
             <Routes>
+
               <Route path="/login" element={
-                <LoginPage
-                    users={users}
-                    setLoginMode={setLoginMode}
-                />
-                }/>
+                <LoginPage />
+              } />
               <Route path="/register" element={
-                <RegisterPage
-                    setUsers={setUsers}
-                />
-                }/>
-  
+                <RegisterPage />
+              } />
 
-              <Route path="/" element={<HomePage/>}/>
-              <Route path="/todo" element={<TodoPage/>}/>
-              <Route path="/employee" element={<EmployeePage/>}/>
-            </Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/todo" element={
 
-          </PageContainer>
+                <TodoPage />
+              } />
+              <Route path="/employee" element={
+                <EmployeeProvider>
+                  <EmployeePage />
+                </EmployeeProvider>
+                } />
+            
+          </Routes>
 
-        </BodyLayout>
+        </PageContainer>
 
-      </Container>
+      </BodyLayout>
 
-    </BrowserRouter>
-  )
+    </Container>
+    </Provider>
+
+  </BrowserRouter >
+)
 }
 
 export default App

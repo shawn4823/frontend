@@ -1,304 +1,247 @@
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+// import { UserContext } from '../../no0_context/UserContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../no3_store/slices/userSlice';
 
 const initialState = {
-  username: "", password: ""
+  username: "",
+  password: ""
 }
-
-const LoginForm = ({users, setLoginMode}) => {
+const LoginForm = () => {
+  const {users} = useSelector(state=>state.user)
+  const dispatch = useDispatch();
+ 
   const [user, setUser] = useState(initialState);
   const navigate = useNavigate();
+
   const handleChange = (event) => {
-    const {name,value} = event.target;
-    setUser(prev => (
-      {...prev, [name]:value}
-    ))
+    const { name, value } = event.target;
+    setUser(prev => ({
+      ...prev,
+      [name]: value
+    }))
   }
+
   const handleSubmit = (event) => {
-      event.preventDefault();
-      const loginUser = users.filter(item=>(
-        item.username === user.username 
-        && item.password === user.password
-      ))[0]
-      if(loginUser){
-        alert("성공")
-        setLoginMode(prev=>(
-          {...prev, isLogin: true, username: loginUser.username}
-        ))
-        navigate("/")
-      }else{
-        alert("사용자가 아니군요!!")
-      }
+    event.preventDefault();
+
+    const loginUser = users.filter(item => (
+      item.username === user.username &&
+      item.password === user.password
+    ))[0]
+
+    if (loginUser) {
+      alert("로그인 성공")
+      dispatch(login (loginUser.username))
+      navigate("/")
+    } else {
+      alert("아이디 또는 비밀번호가 올바르지 않습니다.")
+    }
   }
+
   return (
-    <>
+    <Container>
       <Form onSubmit={handleSubmit}>
+
+        <Logo>MySystem</Logo>
+
         <Title>로그인</Title>
-        <Card>
-          <Input 
+
+        <Description>
+          계정에 로그인하여 서비스를 이용하세요.
+        </Description>
+
+        <InputGroup>
+          <Label>아이디</Label>
+
+          <Input
             type="text"
             name="username"
             value={user.username}
             onChange={handleChange}
-            placeholder='사용자 이름'
+            placeholder="아이디 입력"
           />
-        </Card>
-        <Card>
-          <Input 
+        </InputGroup>
+
+        <InputGroup>
+          <Label>비밀번호</Label>
+
+          <Input
             type="password"
             name="password"
             value={user.password}
             onChange={handleChange}
-            placeholder='비밀번호'
+            placeholder="비밀번호 입력"
           />
-        </Card>
-        <Card>
-         <LoginButton>
+        </InputGroup>
+
+        <LoginButton>
           로그인
         </LoginButton>
-         <RegisterButton onClick={()=>navigate("register")}>
-          "아직 회원이 아니신가요? 회원가입
-         </RegisterButton>
-        </Card>
+
+        <Divider />
+
+        <RegisterButton
+          type="button"
+          onClick={() => navigate("/register")}
+        >
+          회원가입
+        </RegisterButton>
+
       </Form>
-    </>
+    </Container>
   )
 }
 
 export default LoginForm;
 
 
-
-const Form = styled.form`
+const Container = styled.div`
   width: 100%;
   min-height: 100vh;
 
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  padding: 40px 20px;
+  background: linear-gradient(
+    135deg,
+    #e0f2fe,
+    #f8fafc,
+    #dbeafe
+  );
 
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(59,130,246,0.15),
-      transparent 30%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      rgba(99,102,241,0.18),
-      transparent 30%
-    ),
-    linear-gradient(
-      135deg,
-      #020617,
-      #0f172a,
-      #1e293b
-    );
-
-  overflow: hidden;
+  padding: 20px;
 `
 
-const Title = styled.h2`
-  font-size: 42px;
-  font-weight: 900;
+const Form = styled.form`
+  width: 100%;
+  max-width: 420px;
 
-  margin-bottom: 28px;
+  background: white;
 
-  color: white;
+  padding: 48px 40px;
 
-  letter-spacing: 1px;
+  border-radius: 24px;
 
-  text-transform: uppercase;
-
-  text-shadow:
-    0 6px 20px rgba(0,0,0,0.35);
-
-  position: relative;
-
-  &::after{
-    content: '';
-
-    position: absolute;
-
-    bottom: -10px;
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    width: 80px;
-    height: 4px;
-
-    border-radius: 999px;
-
-    background:
-      linear-gradient(
-        90deg,
-        #38bdf8,
-        #818cf8
-      );
-  }
-`
-
-const Card = styled.div`
-  width: 430px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08),
+    0 4px 10px rgba(0,0,0,0.04);
 
   display: flex;
   flex-direction: column;
+`
 
-  padding: 38px;
+const Logo = styled.div`
+  font-size: 30px;
+  font-weight: 800;
+  color: #2563eb;
 
-  border-radius: 28px;
+  text-align: center;
 
-  background:
-    rgba(255,255,255,0.08);
+  margin-bottom: 12px;
+`
 
-  backdrop-filter: blur(18px);
+const Title = styled.h2`
+  text-align: center;
 
-  border:
-    1px solid rgba(255,255,255,0.12);
+  font-size: 28px;
+  color: #0f172a;
 
-  box-shadow:
-    0 12px 40px rgba(0,0,0,0.35);
+  margin-bottom: 10px;
+`
 
-  margin-bottom: 18px;
+const Description = styled.p`
+  text-align: center;
 
-  transition: 0.3s;
+  color: #64748b;
+  font-size: 15px;
 
-  &:hover{
-    transform: translateY(-3px);
+  margin-bottom: 32px;
+`
 
-    box-shadow:
-      0 18px 45px rgba(0,0,0,0.45);
-  }
+const InputGroup = styled.div`
+  display: flex;
+  flex-direction: column;
 
-  @media (max-width: 500px){
-    width: 100%;
-    padding: 28px;
-  }
+  margin-bottom: 20px;
+`
+
+const Label = styled.label`
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #334155;
+
+  margin-bottom: 8px;
 `
 
 const Input = styled.input`
   width: 100%;
 
-  padding: 16px 18px;
+  padding: 14px 16px;
 
-  margin-bottom: 18px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
 
-  border: none;
-  border-radius: 16px;
-
-  background:
-    rgba(255,255,255,0.08);
-
-  color: white;
-
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
 
   outline: none;
 
-  transition: 0.25s;
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  &::placeholder{
-    color: #cbd5e1;
-  }
+  transition: 0.2s;
 
   &:focus{
-
-    background:
-      rgba(255,255,255,0.12);
-
-    border-color: #38bdf8;
+    border-color: #3b82f6;
 
     box-shadow:
-      0 0 0 4px rgba(56,189,248,0.18);
-
-    transform:
-      scale(1.015);
+      0 0 0 4px rgba(59,130,246,0.15);
   }
 `
 
 const BaseButton = styled.button`
   width: 100%;
 
-  padding: 15px;
-
   border: none;
-  border-radius: 16px;
+  border-radius: 12px;
+
+  padding: 14px;
 
   font-size: 15px;
   font-weight: 700;
 
   cursor: pointer;
 
-  transition: 0.25s;
-
-  margin-bottom: 14px;
-
-  letter-spacing: 0.3px;
+  transition: 0.2s;
 `
 
 const LoginButton = styled(BaseButton)`
-  background:
-    linear-gradient(
-      90deg,
-      #38bdf8,
-      #6366f1
-    );
-
+  background: #2563eb;
   color: white;
 
-  box-shadow:
-    0 10px 25px rgba(99,102,241,0.35);
+  margin-top: 8px;
 
   &:hover{
-
-    transform:
-      translateY(-3px)
-      scale(1.01);
-
-    box-shadow:
-      0 15px 30px rgba(99,102,241,0.5);
-  }
-
-  &:active{
-    transform: scale(0.98);
+    background: #1d4ed8;
+    transform: translateY(-1px);
   }
 `
 
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+
+  background: #e2e8f0;
+
+  margin: 24px 0;
+`
+
 const RegisterButton = styled(BaseButton)`
-  background:
-    rgba(255,255,255,0.08);
-
-  color: #e2e8f0;
-
-  border:
-    1px solid rgba(255,255,255,0.1);
-
-  backdrop-filter: blur(8px);
+  background: #eff6ff;
+  color: #2563eb;
 
   &:hover{
-
-    background:
-      rgba(255,255,255,0.15);
-
-    color: white;
-
-    transform:
-      translateY(-2px);
-
-    box-shadow:
-      0 8px 20px rgba(255,255,255,0.08);
-  }
-
-  &:active{
-    transform: scale(0.98);
+    background: #dbeafe;
   }
 `

@@ -1,280 +1,212 @@
-import React, { useState, useEffect } from 'react'
+// EmployeePage.jsx
+
+import React, { useContext, useEffect } from 'react'
+import styled from 'styled-components';
+
 import EmployeeList from '../no2_components/employee/EmployeeList'
 import EmployeeTable from '../no2_components/employee/EmployeeTable'
 import EmployeeRegister from '../no2_components/employee/EmployeeRegister'
 import EmployeeUpdate from '../no2_components/employee/EmployeeUpdate'
-import styled from 'styled-components'
-
-const initialEmps = [
-    {id: "1", name: "John", email: "john@example.com", job: "frontend", pay: 600},
-    {id: "2", name: "Peter", email: "peter@example.com", job: "backend", pay: 600},
-    {id: "3", name: "Susan", email: "susan@example.com", job: "db", pay: 600},
-    {id: "4", name: "Sue", email: "sue@example.com", job: "ai", pay: 600},
-]
-
-const inintialEmp = {
-  id: '', name: '', email:'', job:'', pay:''
-}
-
-const initialState = {
-  empTable: initialEmps, 
-  emp: inintialEmp,
-  mode: "",
-  selectedId:""
-}
+import { useDispatch, useSelector } from 'react-redux';
+// import { EmployeeContext } from '../no0_context/EmployeeContext';
+import { setEmp, remove, setMode} from '../no3_store/slices/employeeSlice';
+import { employeeDeleteSlice } from '../no3_store/slices/employeeSlice';
 
 const EmployeePage = () => {
-  const [state,setState] = useState(initialState);
-  const {empTable, selectedId, emp, mode} = state;
+  const {selectedId, mode, empTable} = useSelector(state=>state.emp);
+  const dispatch = useDispatch();
 
   useEffect(()=>{
+    const newEmp = empTable.filter(item => item.id === selectedId)[0]
     selectedId &&
-    setState(prev => (
-      {
-        ...prev, 
-        emp: empTable.find(item => item.id === selectedId)
-       }
-    ))      // emp를 다시 화면에 뿌려줌
-}, [selectedId, empTable])
+    dispatch(setEmp(newEmp))
+  }, [selectedId, empTable])
 
-const handleDelete =()=>{
-  if(!selectedId){
-    alert("삭제할 데이터를 선택하시오");
-    return;
-  }
-  setState(prev => (
-    {
-      ...prev,
-      empTable: prev.empTable.filter(item => item.id !== selectedId),
-      emp: initialEmp,
-      selectedId: ""
+  const handleDelete = () => {
 
+    if(!selectedId) {
+      alert("삭제할 데이터를 선택하세요");
+      return;
     }
-  ))
-}
+    dispatch(employeeDeleteSlice(selectedId))
+  }
+
   return (
+    <Container>
 
-  <Container>
+      <Title>
+        Employee Management
+      </Title>
 
-    <Title>Employee Management</Title>
+      <Content>
 
-    <ContentBox>
+        <LeftSection>
 
-      <EmployeeList
-        state={state}
-        setState={setState}
-      />
+          <Card>
+            <SectionTitle>
+              직원 목록
+            </SectionTitle>
+            <EmployeeList/>
+          </Card>
 
-      <EmployeeTable
-        state={state}
-      />
+        </LeftSection>
 
-      <ButtonGroup>
+        <RightSection>
 
-        <RegisterButton
-          onClick={() =>
-            setState(prev => ({
-              ...prev,
-              mode: "register"
-            }))
-          }
-        >
-          등록
-        </RegisterButton>
+          <Card>
+            <SectionTitle>
+              직원 정보
+            </SectionTitle>
 
-        <UpdateButton
-          onClick={() =>
-            setState(prev => ({
-              ...prev,
-              mode: "update"
-            }))
-          }
-        >
-          수정
-        </UpdateButton>
+            <EmployeeTable/>
+          </Card>
 
-        <DeleteButton
-          onClick={() =>
-            setState(prev => ({
-              ...prev,
-              mode: "delete"
-            }))
-          }
-        >
-          삭제
-        </DeleteButton>
+          <Card>
 
-      </ButtonGroup>
-
-      <FormArea>
-
-        {
-          mode === "register" ?
-
-            <EmployeeRegister
-              setState={setState}
-            />
-
-            : mode === "update" ?
-
-              <EmployeeUpdate
-                emp={emp}
-                setState={setState}
-              />
-
-              : mode === "delete" &&
-
-              <DeleteConfirmButton
-                onClick={handleDelete}
+            <ButtonGroup>
+              <ActionButton
+                onClick={() => dispatch(setMode("register"))}
               >
-                위 데이터를 삭제하시겠습니까?
-              </DeleteConfirmButton>
-        }
+                등록
+              </ActionButton>
 
-      </FormArea>
+              <ActionButton
+                onClick={() => dispatch(setMode("update"))}
+              >
+                수정
+              </ActionButton>
 
-    </ContentBox>
+              <DeleteButton
+                onClick={() => dispatch(setMode("delete"))}
+              >
+                삭제
+              </DeleteButton>
+            </ButtonGroup>
 
-  </Container>
-)
+            {
+              mode === "register" ?
+
+              <EmployeeRegister/>
+              :
+              mode === "update" ?
+              <EmployeeUpdate/>
+              :
+              mode === "delete" ?
+
+              <DeleteBox>
+                <p>위 데이터를 삭제하시겠습니까?</p>
+
+                <DeleteConfirmButton
+                  onClick={handleDelete}
+                >
+                  삭제 확인
+                </DeleteConfirmButton>
+              </DeleteBox>
+
+              :
+
+              null
+            }
+
+          </Card>
+
+        </RightSection>
+
+      </Content>
+
+    </Container>
+  )
 }
+
 export default EmployeePage
 
-const Container = styled.div`
 
+const Container = styled.div`
   width: 100%;
   min-height: 100vh;
-
-  padding: 50px 20px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #020617,
-      #0f172a,
-      #1e293b
-    );
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 32px;
+  background: #f1f5f9;
 `
 
 const Title = styled.h1`
-
-  font-size: 42px;
-  font-weight: 900;
-
-  color: white;
-
-  margin-bottom: 35px;
-
-  letter-spacing: 1px;
-
-  text-shadow:
-    0 8px 20px rgba(0,0,0,0.35);
+  font-size: 32px;
+  margin-bottom: 24px;
+  color: #0f172a;
 `
 
-const ContentBox = styled.div`
-
-  width: 100%;
-  max-width: 1200px;
-
-  padding: 35px;
-
-  border-radius: 28px;
-
-  background:
-    rgba(255,255,255,0.08);
-
-  backdrop-filter: blur(18px);
-
-  border:
-    1px solid rgba(255,255,255,0.12);
-
-  box-shadow:
-    0 12px 40px rgba(0,0,0,0.35);
-`
-
-const ButtonGroup = styled.div`
-
+const Content = styled.div`
   display: flex;
-  gap: 14px;
+  gap: 24px;
 
-  margin-top: 30px;
-  margin-bottom: 30px;
-
-  flex-wrap: wrap;
-`
-
-const BaseButton = styled.button`
-
-  padding: 14px 24px;
-
-  border: none;
-  border-radius: 16px;
-
-  font-size: 15px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.25s;
-
-  color: white;
-
-  &:hover{
-
-    transform:
-      translateY(-3px);
-
-    opacity: 0.92;
+  @media (max-width: 900px){
+    flex-direction: column;
   }
 `
 
-const RegisterButton = styled(BaseButton)`
+const LeftSection = styled.div`
+  width: 280px;
 
-  background:
-    linear-gradient(
-      90deg,
-      #38bdf8,
-      #6366f1
-    );
+  @media (max-width: 900px){
+    width: 100%;
+  }
 `
 
-const UpdateButton = styled(BaseButton)`
-
-  background:
-    linear-gradient(
-      90deg,
-      #10b981,
-      #059669
-    );
+const RightSection = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 `
 
-const DeleteButton = styled(BaseButton)`
-
-  background:
-    linear-gradient(
-      90deg,
-      #ef4444,
-      #dc2626
-    );
+const Card = styled.div`
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 `
 
-const DeleteConfirmButton = styled(BaseButton)`
-
-  width: 100%;
-
-  background:
-    linear-gradient(
-      90deg,
-      #ef4444,
-      #991b1b
-    );
+const SectionTitle = styled.h2`
+  margin-bottom: 20px;
+  color: #1e293b;
 `
 
-const FormArea = styled.div`
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+`
 
-  margin-top: 20px;
+const ActionButton = styled.button`
+  border: none;
+  background: #3b82f6;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+
+  &:hover{
+    opacity: 0.85;
+  }
+`
+
+const DeleteButton = styled(ActionButton)`
+  background: #ef4444;
+`
+
+const DeleteBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+
+const DeleteConfirmButton = styled.button`
+  width: 160px;
+  border: none;
+  background: #dc2626;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
 `

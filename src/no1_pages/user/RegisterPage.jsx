@@ -1,11 +1,9 @@
 import React from 'react'
-import Register from '../../no2_components/user/RegisterForm'
+import RegisterForm from '../../no2_components/user/RegisterForm'
 
-const RegisterPage = ({setUsers}) => {
+const RegisterPage = () => {
   return (
-    <Register
-        setUsers={setUsers}
-    />
+    <RegisterForm/>
   )
 }
 
